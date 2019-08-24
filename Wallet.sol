@@ -29,13 +29,34 @@ contract Wallet{
         }
     }
 
-    //Function to update the owners of the Wallet
-    function update(address owner) public{
-        owners.push(owner);
+    //Function to add an owner to the Wallet
+    function add_owner(address sender) public{
+        //Add the owner
+        owners.push(sender);
 
         //Update the threshold
         if(owners.length % 2 != 0){
             threshold += 1;
+        }
+    }
+    
+    //Function to remove an owner from the Wallet
+    function remove_owner(address owner) public{
+        //Remove the owner
+        for(uint i = 0; i < owners.length - 1; i++) {
+            if(owners[i] == owner){
+                for(uint j = i; j < owners.length - 1; j++) {
+                    owners[j] = owners[j + 1];
+                }
+            break;
+            }
+        }
+        delete owners[owners.length - 1];
+        owners.length--;
+        
+        //Update the threshold
+        if(owners.length % 2 == 0){
+            threshold -= 1;
         }
     }
 
