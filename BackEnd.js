@@ -1,1 +1,0 @@
-//Script to initiate and sign transactions using the Web3.js module
