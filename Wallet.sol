@@ -12,7 +12,7 @@ contract Verifier{
 //Contract to overlook the working of the MultiSig Wallet
 contract Wallet{
     //Declare the attributes of the Wallet
-    uint8 balance = 0;
+    uint256 balance = 0;
     address[] public owners;
     uint256 public threshold;
 
@@ -30,7 +30,7 @@ contract Wallet{
     }
 
     //Function to add an owner to the Wallet
-    function add_owner(address sender) public{
+    function addOwner(address sender) public{
         //Add the owner
         owners.push(sender);
 
@@ -39,9 +39,11 @@ contract Wallet{
             threshold += 1;
         }
     }
-    
+
     //Function to remove an owner from the Wallet
-    function remove_owner(address owner) public{
+    /*Note: Solidity 0.4 has no in-built pop function. 
+    Thus, the popping had to be done manually by shfiting and deleting.*/
+    function removeOwner(address owner) public{
         //Remove the owner
         for(uint i = 0; i < owners.length - 1; i++) {
             if(owners[i] == owner){
@@ -53,15 +55,20 @@ contract Wallet{
         }
         delete owners[owners.length - 1];
         owners.length--;
-        
+
         //Update the threshold
         if(owners.length % 2 == 0){
             threshold -= 1;
         }
     }
 
+    //Function to display the current set of owners
+    function displayOwners() public view returns(address[]){
+            return owners;
+    }
+
     //Function to display the balance funds in the Wallet
-    function getBalance() public view returns(uint8){
+    function getBalance() public view returns(uint256){
         return balance;
     }
 

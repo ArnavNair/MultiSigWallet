@@ -16,10 +16,31 @@ ethJS = require('web3');
 web3 = new ethJS('http://localhost:8545');
 
 //Obtain the accounts on the BlockChain
-web3.eth.getAccounts().then(function(result){accounts = result;})
+owners = []
+web3.eth.getAccounts().then(function(result){owners.push(result);})
 
 //Create an instance of the Smart Contract
 inst_contract = new web3.eth.Contract(abi);
 
 //Deploy the Smart Contract onto the BlockChain
-inst_contract.deploy({data: bc}).send({from: accounts[0]}).then(function(result){myContract = result;})
+//Note: owners is now a 2-D array, with the addresses stored inside the inner array. That's why the values are passed this way. 
+inst_contract.deploy({data: bc, arguments: owners}).send({from: owners[0][0], gas: 1000000}).then(function(result){myContract = result;})
+
+//Deposit money in the Wallet
+myContract.methods.deposit(100).send({from: owners[0][1]});
+
+//Check the Wallet's balance
+myContract.methods.getBalance().call().then(console.log);
+
+//Add an Owner
+acc = web3.eth.accounts.create();
+myContract.methods.addOwner(acc.address).send({from: owners[0][0]});
+
+//Display the list of owners
+myContract.methods.displayOwners().call().then(console.log);
+
+//Remove an owner
+myContract.methods.removeOwner(owners[0][0]).send({from: owners[0][1]}, gas: 1000000);
+
+//Display the list of owners
+myContract.methods.displayOwners().call().then(console.log);
