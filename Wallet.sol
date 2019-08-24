@@ -16,7 +16,7 @@ contract Wallet{
     address[] public owners;
     uint256 public threshold;
 
-    //Constructor to obtain the addresses of the owners
+    //Constructor that accepts the addresses of the owners
     constructor(address[] owners_) public{
         owners = owners_;
         if(owners.length % 2 == 0){
