@@ -9,7 +9,7 @@ cc = compiler.compile(sc);
 
 //Obtain the interface and compiled byte code of the Smart Contract
 abi = JSON.parse(cc.contracts[":Wallet"].interface);
-bc = cc.contracts[":Wallet"].byteCode;
+bc = cc.contracts[":Wallet"].bytecode;
 
 //Obtain a web3 object
 ethJS = require('web3');
