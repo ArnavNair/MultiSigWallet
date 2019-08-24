@@ -19,6 +19,8 @@ contract Wallet{
     //Constructor that accepts the addresses of the owners
     constructor(address[] owners_) public{
         owners = owners_;
+
+        //Set the threshold for consensus
         if(owners.length % 2 == 0){
             threshold = owners.length / 2;
         }
@@ -37,7 +39,7 @@ contract Wallet{
         }
     }
 
-    //Function to display the balance funds in the wallet
+    //Function to display the balance funds in the Wallet
     function getBalance() public view returns(uint8){
         return balance;
     }
@@ -46,5 +48,31 @@ contract Wallet{
     function deposit(uint8 fund) public{
         balance += fund;
     }
-}
 
+    //Function to withdraw funds from the Wallet
+    function withdraw(uint8 fund, address[] senders) public{
+        //Find number of owners approving the transaction
+        uint8 consensus = 0;
+        for(uint i = 0; i < senders.length; i++){
+            //Obtain the sender's address
+            address sender_adr = senders[i];
+
+            //Check if the sender is an owner of the contract
+            bool flag = false;
+            for(uint j = 0; j < owners.length; j++){
+                if(sender_adr == owners[j]){
+                    flag = true;
+                    break;
+                }
+            }
+
+            if(flag){
+                consensus += 1;
+            }
+        }
+
+        if(consensus >= threshold){
+            balance -= fund;
+        }
+    }
+}
