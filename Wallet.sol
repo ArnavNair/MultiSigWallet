@@ -27,9 +27,24 @@ contract Wallet{
         }
     }
 
+    //Function to update the owners of the Wallet
+    function update(address owner) public{
+        owners.push(owner);
+
+        //Update the threshold
+        if(owners.length % 2 != 0){
+            threshold += 1;
+        }
+    }
+
     //Function to display the balance funds in the wallet
     function getBalance() public view returns(uint8){
         return balance;
+    }
+
+    //Function to deposit funds in the Wallet
+    function deposit(uint8 fund) public{
+        balance += fund;
     }
 }
 
