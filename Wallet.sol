@@ -87,7 +87,7 @@ contract Wallet{
                 flag = true;
                 break;
             }
-        }
+        }   
 
         if(flag){
             consensus += 1;
