@@ -17,8 +17,17 @@ contract Wallet{
     uint256 public threshold;
     uint256 consensus = 0;
 
+    //Declare a nonce to prevent playback attacks
+    uint256 nonce = 0;
+
+    //Function to update the nonce
+    function updateNonce() public{
+        nonce += 1;
+    }
+
     //Constructor that accepts the addresses of the owners
     constructor(address[] owners_) public{
+        //Accept owners
         owners = owners_;
 
         //Set the threshold for consensus
@@ -31,71 +40,110 @@ contract Wallet{
     }
 
     //Function to add an owner to the Wallet
-    function addOwner(address sender) public{
-        //Add the owner
-        owners.push(sender);
+    function addOwner(address sender, uint256 nonce_) public{
+        if(nonce == nonce_)
+        {
+            //Add the owner
+            owners.push(sender);
 
-        //Update the threshold
-        if(owners.length % 2 != 0){
-            threshold += 1;
+            //Update the threshold
+            if(owners.length % 2 != 0){
+                threshold += 1;
+            }
+
+            //Update nonce
+            updateNonce();
         }
     }
 
     //Function to remove an owner from the Wallet
     /*Note: Solidity 0.4 has no in-built pop function. 
-    Thus, the popping had to be done manually by shfiting and deleting.*/
-    function removeOwner(address owner) public{
-        //Remove the owner
-        for(uint i = 0; i < owners.length - 1; i++) {
-            if(owners[i] == owner){
-                for(uint j = i; j < owners.length - 1; j++) {
-                    owners[j] = owners[j + 1];
+    Thus, the popping had to be done manually by shfiting and deleting in order to maintain the order of the owners.*/
+    function removeOwner(address owner, uint256 nonce_) public{
+        if(nonce == nonce_)
+        {
+           //Remove the owner
+            for(uint i = 0; i < owners.length - 1; i++) {
+                if(owners[i] == owner){
+                    for(uint j = i; j < owners.length - 1; j++) {
+                        owners[j] = owners[j + 1];
+                    }
+                break;
                 }
-            break;
             }
-        }
-        delete owners[owners.length - 1];
-        owners.length--;
+            delete owners[owners.length - 1];
+            owners.length--;
 
-        //Update the threshold
-        if(owners.length % 2 == 0){
-            threshold -= 1;
+            //Update the threshold
+            if(owners.length % 2 == 0){
+                threshold -= 1;
+            }
+
+            //Update nonce
+            updateNonce();
         }
     }
 
     //Function to display the current set of owners
-    function displayOwners() public view returns(address[]){
-            return owners;
+    function displayOwners(uint256 nonce_) public returns(address[]){
+        if(nonce == nonce_)
+        {
+            //Update nonce
+            updateNonce();
+
+            //Return list of owners
+            return(owners);
+        }
     }
 
     //Function to display the balance funds in the Wallet
-    function getBalance() public view returns(uint256){
-        return balance;
+    function getBalance(uint256 nonce_) public returns(uint256){
+        if(nonce == nonce_)
+        {
+            //Update nonce
+            updateNonce();
+
+            //Return the balance
+            return balance;
+        }
     }
 
     //Function to deposit funds in the Wallet
-    function deposit(uint8 fund) public{
-        balance += fund;
+    function deposit(uint8 fund, uint256 nonce_) public{
+        if(nonce == nonce_)
+        {
+            //Update nonce
+            updateNonce();
+
+            //Update the balance
+            balance += fund;
+        }
     }
 
     //Function to withdraw funds from the Wallet
-    function withdraw(uint8 fund, address sender) public{
-        //Check if the sender is an owner of the contract
-        bool flag = false;
-        for(uint j = 0; j < owners.length; j++){
-            if(sender == owners[j]){
-                flag = true;
-                break;
+    function withdraw(uint8 fund, address sender, uint256 nonce_) public{
+        if(nonce == nonce_)
+        {
+            //Check if the sender is an owner of the contract
+            bool flag = false;
+            for(uint j = 0; j < owners.length; j++){
+                if(sender == owners[j]){
+                    flag = true;
+                    break;
+                }
             }
-        }   
 
-        if(flag){
-            consensus += 1;
-        }
+            if(flag){
+                consensus += 1;
+            }
 
-        if(consensus >= threshold){
-            balance -= fund;
-            consensus = 0;
+            if(consensus >= threshold){
+                balance -= fund;
+                consensus = 0;
+            }
+
+            //Update nonce
+            updateNonce();
         }
     }
 }

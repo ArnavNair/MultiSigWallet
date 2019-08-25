@@ -22,7 +22,7 @@ web3.eth.getAccounts().then(function(result){owners.push(result);})
 //Create an instance of the Smart Contract
 inst_contract = new web3.eth.Contract(abi);
 
-//Create a nonce to prevent playback attacks
+//Declare a nonce to prevent playback attacks
 nonce = 0;
 
 //Deploy the Smart Contract onto the BlockChain
@@ -30,22 +30,19 @@ nonce = 0;
 inst_contract.deploy({data: bc, arguments: owners}).send({from: owners[0][0], gas: 1000000}).then(function(result){myContract = result;})
 
 //Deposit money in the Wallet
-myContract.methods.deposit(100, nonce).send({from: owners[0][1]});
+myContract.methods.deposit(100, nonce).send({from: owners[0][1], gas: 1000000});
 nonce += 1;
 
 //Check the Wallet's balance
 myContract.methods.getBalance(nonce).call().then(console.log);
-nonce += 1;
-------------------------------------------------------------
 
 //Add an Owner
 acc = web3.eth.accounts.create();
-myContract.methods.addOwner(acc.address, nonce).send({from: owners[0][0]});
+myContract.methods.addOwner(acc.address, nonce).send({from: owners[0][0], gas: 1000000});
 nonce += 1;
 
 //Display the list of owners
 myContract.methods.displayOwners(nonce).call().then(console.log);
-nonce += 1;
 
 //Remove an owner
 myContract.methods.removeOwner(owners[0][0], nonce).send({from: owners[0][1], gas: 1000000});
@@ -53,14 +50,10 @@ nonce += 1;
 
 //Display the list of owners
 myContract.methods.displayOwners(nonce).call().then(console.log);
-nonce += 1;
 
-//Generate withdraw requests and display the balance at each stage
-for(i = 0; i < 5; i = i + 1){
-	myContract.methods.withdraw(20, owners[0][0], nonce).send({from: owners[0][0]});
-	nonce += 1;
-	myContract.methods.getBalance(nonce).call().then(console.log);
+//Generate withdraw requests and display the resultant balance
+for(i = 0; i < 6; i++){
+	myContract.methods.withdraw(20, owners[0][i], nonce).send({from: owners[0][i], gas: 1000000});
 	nonce += 1;
 }
 myContract.methods.getBalance(nonce).call().then(console.log);
-nonce += 1;
