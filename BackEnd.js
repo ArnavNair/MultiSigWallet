@@ -44,3 +44,10 @@ myContract.methods.removeOwner(owners[0][0]).send({from: owners[0][1]}, gas: 100
 
 //Display the list of owners
 myContract.methods.displayOwners().call().then(console.log);
+
+//Generate withdraw requests and display the balance at each stage
+for(i = 0; i < 5; i = i + 1){
+	myContract.methods.withdraw(20, owners[0][0]).send({from: owners[0][0]});
+	myContract.methods.getBalance().call().then(console.log);
+}
+myContract.methods.getBalance().call().then(console.log);
