@@ -29,12 +29,6 @@ nonce = 0;
 //Note: owners is now a 2-D array, with the addresses stored inside the inner array. That's why the values are passed this way. 
 inst_contract.deploy({data: bc, arguments: owners}).send({from: owners[0][0], gas: 1000000}).then(function(result){myContract = result;})
 
-//Deploy the Verifier Contract onto the BlockChain 
-abi2 = JSON.parse(cc.contracts[":Verifier"].interface);
-bc2 = cc.contracts[":Verifier"].bytecode;
-inst_ver = new web3.eth.Contract(abi2);
-inst_ver.deploy({data: bc}).send({from: owners[0][0], gas: 1000000}).then(function(result){myVerifier = result;})
-
 //Deposit money in the Wallet
 myContract.methods.deposit(100, nonce).send({from: owners[0][1], gas: 1000000});
 nonce += 1;
