@@ -6,7 +6,7 @@ contract Verifier{
     function verify(address signer_adr, bytes32 msgHash, uint8 v, bytes32 r, bytes32 s) public pure returns(bool){
         //Check if the signer's address matches that displayed by the message hash
         return (ecrecover(msgHash, v, r, s) == signer_adr);
-        }
+    }
 }
 
 //Contract to overlook the working of the MultiSig Wallet
