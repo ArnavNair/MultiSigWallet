@@ -72,4 +72,6 @@ v = '0x' + signature.slice(128, 130);
 v_decimal = web3.utils.toDecimal(v) + 27;
 
 //Verfiy the signature
+//NOTE: The Digital Signature verification process has issues that haven't been fixed.
+//Thus, it isn't ready for use.
 myVerifier.methods.verify(sender_adr, hexMsg, v, r, s);
