@@ -7,8 +7,7 @@
  It has a constructor that initializes instances of the contract. It also accepts a starting list of the owners, and sets the threshold of consensus for withdrawal of funds(50% in this case).
  Other functions provide the power to display balance funds, display current set of owners and deposit or withdraw funds. When a request is made to withdraw funds, the contract confirms that the request is from an owner, and then increases its current consensus reading. Once the consensus crosses the threshold, the withdrawal is carried out.
  Each transaction requesting the use of the contract must be authenticated before carrying it out. This is achieved by producing a digital signature for the transaction. The contract has a function to later verify this signature.
- NOTE: Despite several attempts, the verifier function couldn't be brought upto working condition, and didn't perform the necessary task. Thus, the contract is currently not capable of accurately verifying digital signatures.
-
+ 
 ### Backend of The DApp
  In order to interact with and test the above mentioned contract, a dummy backend was designed using Node.js, specifically its Web3 package. This is stored within the 'BackEnd.js' file. The contract was first compiled and later deployed onto a private BlockChain on the local host, created using Ganache. The calls to the contract are all hard coded here, and are simply to display the functioning of the contract. In a real DApp, the backend would accept transaction requests from the frontend, and interact with the contract accordingly. Similarly, the addresses passed to the function calls are all representative, in reality the requesting user's address would be passed.
 
@@ -18,4 +17,3 @@
 ### Bonus Task: Prevention of Playback Attacks
  Playback attacks allow a transaction to be intercepted and replayed to the contract endless times, posing a major security threat. To combat this, a simple integer nonce is used. The backend and contract both start off with the same nonce value, which gets updated after every transaction. Thus, in the time that a hacker intercepts a transaction and replays it, other transaction calls to the contract would have updated its nonce, while the hacker sends the old intercepted value. Thus, the transaction request won't be accepted.
  Another possible way of combating this would have been to attach a timestamp to each transaction and keep a very short accepting time interval within the contract.
- NOTE: Some sources state that in Solidity, functions that return any value cannot update a variable within their body. This was extensively tested and seems to hold. For this reason, the functions that display balance and current owners couldn't update their nonce. Thus, these functions are unfortunately susceptible to playback attacks.
